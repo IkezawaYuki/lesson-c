@@ -9,6 +9,18 @@ int GCD(int m, int n) {
 }
 
 
+// todo鳥簿なっち
+int toribo(int N){
+    if (N == 0){
+        return 0;
+    } else if (N == 1){
+        return 1;
+    } else if (N == 2){
+        return 2;
+    }
+}
+
+
 int fibo(int N){
     cout << "fibo(" << N << ")を呼び出しました" << endl;
     if (N == 0) return 0;
@@ -41,20 +53,44 @@ long long fibo_memo(int N){
     return memo[N] = fibo_memo(N - 1) + fibo_memo(N - 2);
 }
 
+bool func(int i, int w, const vector<int> &a){
+    if (i == 0){
+        if (w == 0) return true;
+        else return false;
+    }
+
+    if (func(i - 1, w, a)) return true;
+
+    if (func(i - 1, w - a[i], a)) return true;
+
+    return false;
+}
+
 
 int main(){
-    cout << GCD(51, 15) << endl;
-    cout << GCD(15, 51) << endl;
+    int N, W;
+    cin >> N >> W;
+    vector<int> a(N);
+    for (int i = 0; i < N; ++i) cin >> a[i];
 
-    fibo(6);
-    fibo_array();
-
-    memo.assign(50, -1);
-    fibo_memo(49);
-    for (int N = 2; N < 50; ++N){
-        cout << N << " 項目: " << memo[N] << endl;
-    }
+    if (func(N, W, a)) cout << "Yes" << endl;
+    else cout << "No" << endl;
 }
+
+
+//int main(){
+//    cout << GCD(51, 15) << endl;
+//    cout << GCD(15, 51) << endl;
+//
+//    fibo(6);
+//    fibo_array();
+//
+//    memo.assign(50, -1);
+//    fibo_memo(49);
+//    for (int N = 2; N < 50; ++N){
+//        cout << N << " 項目: " << memo[N] << endl;
+//    }
+//}
 
 
 
