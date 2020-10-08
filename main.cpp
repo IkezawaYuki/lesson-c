@@ -2,11 +2,44 @@
 #include <vector>
 using namespace std;
 
+const long long INF = 1LL << 60;
+
+int main(){
+    int N;
+    cin >> N;
+    vector<long long>h(N);
+    for (int i = 0; i < N; ++i) cin >> h[i];
+
+    vector<long long> dp(N, INF);
+
+    dp[0] = 0;
+
+    for (int i = 1; i < N; ++i) {
+        if (i == 1) dp[i] = abs(h[i]-h[i-1]);
+        else dp[i] = min(dp[i-1] + abs(h[i] - h[i-1]),
+                         dp[i-2] + abs(h[i] - h[i-2]));
+    }
+
+    cout << dp[N-1] << endl;
+}
+
 int GCD(int m, int n) {
     if (n == 0) return m;
 
     return GCD(n, m % n);
 }
+
+int toribo(int N);
+
+
+vector<long long> cache;
+
+//int main(){
+//    int N = 10;
+//    cache.assign(11, -1);
+//    int A = toribo(N);
+//    cout << A << endl;
+//}
 
 
 // todo鳥簿なっち
@@ -18,6 +51,10 @@ int toribo(int N){
     } else if (N == 2){
         return 2;
     }
+
+    if (cache[N] != -1) return cache[N];
+
+    return cache[N] = toribo(N-2) + toribo(N-1) + N;
 }
 
 
@@ -67,55 +104,3 @@ bool func(int i, int w, const vector<int> &a){
 }
 
 
-int main(){
-    int N, W;
-    cin >> N >> W;
-    vector<int> a(N);
-    for (int i = 0; i < N; ++i) cin >> a[i];
-
-    if (func(N, W, a)) cout << "Yes" << endl;
-    else cout << "No" << endl;
-}
-
-
-//int main(){
-//    cout << GCD(51, 15) << endl;
-//    cout << GCD(15, 51) << endl;
-//
-//    fibo(6);
-//    fibo_array();
-//
-//    memo.assign(50, -1);
-//    fibo_memo(49);
-//    for (int N = 2; N < 50; ++N){
-//        cout << N << " 項目: " << memo[N] << endl;
-//    }
-//}
-
-
-
-
-
-
-//int main() {
-//    int N, W;
-//    cin >> N >> W;
-//    vector<int>a(N);
-//    for (int i = 0; i < N; ++i) cin >> a[i];
-//
-//    bool exist = false;
-//    for (int bit = 0; bit < (1 << N); ++bit)
-//    {
-//        int sum = 0;
-//        for (int i = 0; i < N; ++i){
-//            if (bit & (1 << i)){
-//                sum += a[i];
-//            }
-//        }
-//
-//        if (sum == W) exist = true;
-//    }
-//
-//    if (exist) cout << "Yes" << endl;
-//    else cout << "No" << endl;
-//}
