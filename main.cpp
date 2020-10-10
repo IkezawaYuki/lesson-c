@@ -1,30 +1,37 @@
 #include <iostream>
+#include <string>
 #include <vector>
 using namespace std;
 
-template<class T> void chmax(T& a, T b){
-    if (a < b){
+template<class T> void chmin(T& a, T b){
+    if (a > b){
         a = b;
     }
 }
 
+const int INF = 1 << 29;
+
 int main(){
-  int N; long long W;
-  cin >> N >> W;
-  vector<long long>weight(N), value(N);
-  for (int i = 0; i < N; ++i) cin >> weight[i] >> value[i];
+    string S, T;
+    cin >> S >> T;
 
+    vector<vector<int>> dp(S.size() + 1, vector<int>(T.size()+1, INF));
+    dp[0][0] = 0;
 
-  vector<vector<long long>>dp(N+1, vector<long long>(W+1, 0));
+    for (int i = 0; i <= S.size(); ++i){
+        for (int j = 0; j <= T.size(); ++j){
+            if (i > 0 && j > 0){
+                if (S[i-1] == T[j-1]){
+                    chmin(dp[i][j], dp[i-1][j-1]);
+                }else{
+                    chmin(dp[i][j], dp[i-1][j-1]+1);
+                }
+            }
+            if (i > 0) chmin(dp[i][j], dp[i-1][j]+1);
 
-  for (int i = 0; i < N; ++i){
-      for (int w = 0; w <= W; ++w){
-          if (w - weight[i] >= 0){
-              chmax(dp[i+1][w], dp[i][w-weight[i]] + value[i]);
-          }
-          chmax(dp[i+1][w], dp[i][w]);
-      }
-  }
+            if (j > 0) chmin(dp[i][j], dp[i][j-1]+1);
+        }
+    }
 
-  cout << dp[N][W] << endl;
-};
+    cout << dp[S.size()][T.size()] << endl;
+}
