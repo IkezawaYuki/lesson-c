@@ -2,38 +2,29 @@
 #include <vector>
 using namespace std;
 
-template<class T> void chmin(T& a, T b){
-    if (a > b){
+template<class T> void chmax(T& a, T b){
+    if (a < b){
         a = b;
     }
 }
 
-const long long INF = 1LL << 60;
-
-int N;
-vector<long long> h;
-vector<long long> dp;
-
-long long rec(int i){
-    if (dp[i] < INF) return dp[i];
-
-    if (i == 0) return 0;
-
-    long long res = INF;
-
-    chmin(res, rec(i - 1) + abs(h[i] - h[i - 1]));
-
-    if (i > 1) chmin(res, rec(i - 2) + abs(h[i] - h[i - 2]));
-
-    return dp[i] = res;
-}
-
 int main(){
-    cin >> N;
-    h.resize(N);
-    for (int i = 0; i < N; ++i) cin >> h[i];
+  int N; long long W;
+  cin >> N >> W;
+  vector<long long>weight(N), value(N);
+  for (int i = 0; i < N; ++i) cin >> weight[i] >> value[i];
 
-    dp.assign(N, INF);
 
-    cout << rec(N - 1) << endl;
-}
+  vector<vector<long long>>dp(N+1, vector<long long>(W+1, 0));
+
+  for (int i = 0; i < N; ++i){
+      for (int w = 0; w <= W; ++w){
+          if (w - weight[i] >= 0){
+              chmax(dp[i+1][w], dp[i][w-weight[i]] + value[i]);
+          }
+          chmax(dp[i+1][w], dp[i][w]);
+      }
+  }
+
+  cout << dp[N][W] << endl;
+};
