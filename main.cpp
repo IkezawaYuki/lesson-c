@@ -3,23 +3,31 @@
 #include <vector>
 using namespace std;
 
+vector<vector<int>>memo;
 
-void func(long long N, long long cur, int use, long long &counter){
-    if (cur > N) return;
+int func(int i, int w, const vector<int> &a){
+    if (i == 0){
+        if (w == 0) return true;
+        else return false;
+    }
 
-    if (use == 0b111) ++counter;
+    if (memo[i][w] != -1) return memo[i][w];
 
-    func (N, cur * 10 + 7, use | 0b001, counter);
+    if (func(i - 1, w, a)) return memo[i][w] = 1;
 
-    func (N, cur * 10 + 5, use | 0b010, counter);
+    if (func(i - 1, w - a[i], a)) return memo[i][w] = 1;
 
-    func (N, cur * 10 + 3, use | 0b100, counter);
+    return memo[i][w] == 0;
 }
 
 int main(){
-    long long N;
-    cin >> N;
-    long long counter = 0;
-    func(N, 0, 0, counter);
-    cout << counter << endl;
+    int N, W;
+    cin >> N >> W;
+    vector<int> a(N);
+    for (int i = 0; i < N; ++i) cin >> a[i];
+
+    memo.assign(N+1, vector<int>(W+1, -1));
+
+    if (func(N, W, a)) cout << "YES" <<  endl;
+    else cout << "NO" << endl;
 }
