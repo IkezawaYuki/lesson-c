@@ -3,31 +3,20 @@
 #include <vector>
 using namespace std;
 
-vector<vector<int>>memo;
+const int N = 8;
+const vector<int> a = {3,5,8,10,14,17,21,39};
 
-int func(int i, int w, const vector<int> &a){
-    if (i == 0){
-        if (w == 0) return true;
-        else return false;
+int binary_search(int key) {
+    int left = 0, right = (int) a.size() - 1;
+    while (right >= left) {
+        int mid = left + (right - left) / 2;
+        if (a[mid] == key) return mid;
+        else if (a[mid] > key) right = mid - 1;
+        else if (a[mid] < key) left = mid + 1;
     }
-
-    if (memo[i][w] != -1) return memo[i][w];
-
-    if (func(i - 1, w, a)) return memo[i][w] = 1;
-
-    if (func(i - 1, w - a[i], a)) return memo[i][w] = 1;
-
-    return memo[i][w] == 0;
+    return -1;
 }
 
 int main(){
-    int N, W;
-    cin >> N >> W;
-    vector<int> a(N);
-    for (int i = 0; i < N; ++i) cin >> a[i];
-
-    memo.assign(N+1, vector<int>(W+1, -1));
-
-    if (func(N, W, a)) cout << "YES" <<  endl;
-    else cout << "NO" << endl;
+    cout << binary_search(10) << endl;
 }
