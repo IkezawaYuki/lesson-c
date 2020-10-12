@@ -3,20 +3,22 @@
 #include <vector>
 using namespace std;
 
-const int N = 8;
-const vector<int> a = {3,5,8,10,14,17,21,39};
-
-int binary_search(int key) {
-    int left = 0, right = (int) a.size() - 1;
-    while (right >= left) {
-        int mid = left + (right - left) / 2;
-        if (a[mid] == key) return mid;
-        else if (a[mid] > key) right = mid - 1;
-        else if (a[mid] < key) left = mid + 1;
-    }
-    return -1;
-}
-
 int main(){
-    cout << binary_search(10) << endl;
+    cout << "Start Game!" << endl;
+
+    int left = 20, right = 36;
+
+    while (right - left > 1){
+        int mid = left + (right - left) / 2;
+
+        cout << "Is the age less than " << mid << " ?(y/n)" << endl;
+
+        string ans;
+        cin >> ans;
+
+        if (ans == "y") right = mid;
+        else left = mid;
+    }
+
+    cout << "The age is " << left << "!" << endl;
 }
