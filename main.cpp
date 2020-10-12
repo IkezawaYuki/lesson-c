@@ -2,23 +2,28 @@
 #include <string>
 #include <vector>
 using namespace std;
+const int INF = 20000000;
 
 int main(){
-    cout << "Start Game!" << endl;
+    int N, K;
+    cin >> N, K;
+    vector<int>a(N), b(N);
 
-    int left = 20, right = 36;
+    for (int i = 0; i < N; ++i) cin >> a[i];
+    for (int i = 0; i < N; ++i) cin >> b[i];
 
-    while (right - left > 1){
-        int mid = left + (right - left) / 2;
+    int min_value = INF;
 
-        cout << "Is the age less than " << mid << " ?(y/n)" << endl;
+    sort(b.begin(), b.end());
 
-        string ans;
-        cin >> ans;
+    for (int i = 0; i < N; ++i){
+        auto iter = lower_bound(b.begin(), b.end(), K - a[i]);
+        int val = *iter;
 
-        if (ans == "y") right = mid;
-        else left = mid;
+        if (a[i] + val < min_value){
+            min_value = a[i] + val;
+        }
     }
+    cout << min_value << endl;
 
-    cout << "The age is " << left << "!" << endl;
 }
