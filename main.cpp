@@ -5,25 +5,31 @@ using namespace std;
 const int INF = 20000000;
 
 int main(){
-    int N, K;
-    cin >> N, K;
-    vector<int>a(N), b(N);
+    int N;
+    cin >> N;
+    vector<long long> h(N), s(N);
+    for (int i = 0; i < N; i++) cin >> h[i] >> s[i];
 
-    for (int i = 0; i < N; ++i) cin >> a[i];
-    for (int i = 0; i < N; ++i) cin >> b[i];
+    long long left = 0, right = INF;
+    while (right - left > 1) {
+        long long mid = (left + right) / 2;
 
-    int min_value = INF;
+        bool ok = true;
+        vector<long long>t(N, 0);
 
-    sort(b.begin(), b.end());
-
-    for (int i = 0; i < N; ++i){
-        auto iter = lower_bound(b.begin(), b.end(), K - a[i]);
-        int val = *iter;
-
-        if (a[i] + val < min_value){
-            min_value = a[i] + val;
+        for (int i = 0; i < N; ++i){
+            if (mid < h[i]) ok = false;
+            else t[i] = (mid - h[i]) / s[i];
         }
-    }
-    cout << min_value << endl;
 
+        sort(t.begin(), t.end());
+        for (int i = 0; i < N; ++i){
+            if (t[i] < i) ok = false;
+        }
+
+        if(ok) right = mid;
+        else left = mid;
+    }
+
+    cout << right << endl;
 }
