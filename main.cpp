@@ -5,19 +5,23 @@ using namespace std;
 const int INF = 20000000;
 
 int main(){
-    int N;
-    cin >> N;
-    vector<long long> h(N);
+    int A, B, C, X;
 
-    for (int i = 0; i < N; ++i) cin >> h[i];
-
+    cin >> A;
+    cin >> B;
+    cin >> C;
+    cin >> X;
     int counter = 0;
-    while (true){
-        for (int i = 0; i < N; ++i) {
-            if (h[i] % 2 == 0) counter++;
-            else break;
+
+    for (int i = 0; i < A; i++){
+        for (int j = 0; j < B; j++){
+            for(int k = 0; k < C; k++){
+                int sum = 500 * i + 100 * j + 50 * k;
+                if (sum == X) counter++;
+            }
         }
-        break;
     }
+
     cout << counter << endl;
 }
+
