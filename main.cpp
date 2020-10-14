@@ -7,29 +7,17 @@ const int INF = 20000000;
 int main(){
     int N;
     cin >> N;
-    vector<long long> h(N), s(N);
-    for (int i = 0; i < N; i++) cin >> h[i] >> s[i];
+    vector<long long> h(N);
 
-    long long left = 0, right = INF;
-    while (right - left > 1) {
-        long long mid = (left + right) / 2;
+    for (int i = 0; i < N; ++i) cin >> h[i];
 
-        bool ok = true;
-        vector<long long>t(N, 0);
-
-        for (int i = 0; i < N; ++i){
-            if (mid < h[i]) ok = false;
-            else t[i] = (mid - h[i]) / s[i];
+    int counter = 0;
+    while (true){
+        for (int i = 0; i < N; ++i) {
+            if (h[i] % 2 == 0) counter++;
+            else break;
         }
-
-        sort(t.begin(), t.end());
-        for (int i = 0; i < N; ++i){
-            if (t[i] < i) ok = false;
-        }
-
-        if(ok) right = mid;
-        else left = mid;
+        break;
     }
-
-    cout << right << endl;
+    cout << counter << endl;
 }
