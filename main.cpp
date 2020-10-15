@@ -5,21 +5,20 @@ using namespace std;
 const int INF = 20000000;
 
 int main(){
-    int A, B, C, X;
-
+    int N, A, B;
+    cin >> N;
     cin >> A;
     cin >> B;
-    cin >> C;
-    cin >> X;
     int counter = 0;
 
-    for (int i = 0; i < A; i++){
-        for (int j = 0; j < B; j++){
-            for(int k = 0; k < C; k++){
-                int sum = 500 * i + 100 * j + 50 * k;
-                if (sum == X) counter++;
-            }
+    for (int i = 0; i < N; i++){
+        int tmp = 0;
+        if (tmp > 10){
+            tmp += i % 10 * 10;
         }
+        tmp += i;
+
+        if (tmp >= A && tmp <= B) counter += tmp;
     }
 
     cout << counter << endl;
