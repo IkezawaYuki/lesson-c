@@ -4,19 +4,44 @@
 #include <vector>
 using namespace std;
 
-int main(){
-    int N;
-    cin >> N;
-    vector<long long>A(N), B(N);
-    for (int i = 0; i < N; ++i) cin >> A[i] >> B[i];
+struct Node{
+    Node* next;
+    string name;
 
-    long long sum = 0;
-    for (int i = N - 1; i >= 0; --i) {
-        A[i] += sum;
-        long long amari = A[i] % B[i];
-        long long D = 0;
-        if (amari != 0) D = B[i] - amari;
-        sum += D;
+    Node(string name_ = "") : next(NULL), name(name_) { }
+};
+
+Node* nil;
+
+void init(){
+    nil = new Node();
+    nil->next = nil;
+}
+
+void printList(){
+    Node* cur = nil->next;
+    for(; cur != nil; cur = cur->next){
+        cout << cur->name << " -> ";
     }
-    cout << sum << endl;
+    cout << endl;
+}
+
+void insert(Node* v, Node* p = nil){
+    v->next = p->next;
+    p->next = v;
+}
+
+int main(){
+    init();
+
+    vector<string> names = {"yamamoto", "watanabe", "ito", "takahashi", "suzuki", "sato"};
+
+    for (int i = 0; i < (int) names.size(); ++i){
+        Node* node = new Node(names[i]);
+
+        insert(node);
+
+        cout << "step " << i << ": ";
+        printList();
+    }
 }
