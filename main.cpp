@@ -58,5 +58,10 @@ int main(){
         printList();
     }
 
-    // todo
+    cout << "before: ";
+    printList();
+    erase(watanabe);
+    cout << "after: ";
+    printList();
+
 }
