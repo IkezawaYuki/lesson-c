@@ -40,5 +40,13 @@ int pop(){
 }
 
 int main(){
+    init();
+    push(3);
+    push(5);
+    push(7);
 
+    cout << pop() << endl;
+    cout << pop() << endl;
+
+    push(9);
 }
