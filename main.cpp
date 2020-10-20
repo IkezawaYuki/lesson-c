@@ -6,47 +6,54 @@ using namespace std;
 
 const int MAX = 100000;
 
+int qu[MAX];
+int tail = 0, head = 0;
+
 int st[MAX];
 int top = 0;
 
 void init(){
-    top = 0;
+    top = 0, tail = 0;
 }
 
 bool isEmpty(){
-    return (top == 0);
+    return (top == tail);
 }
 
 bool isFull(){
-    return (top == MAX);
+    return (head == (tail + 1) % MAX);
 }
 
-void push(int x){
+void enqueue(int x) {
     if (isFull()){
-        cout << "error: stack is full." << endl;
+        cout << "error: queue is full." << endl;
         return;
     }
-    st[top] = x;
-    ++top;
+    qu[tail] = x;
+    ++tail;
+    if(tail == MAX) tail = 0;
 }
 
-int pop(){
+int dequeue(){
     if (isEmpty()){
-        cout << "error: stack is empty" << endl;
+        cout << "error: queue is empty." << endl;
         return -1;
     }
-    --top;
-    return st[top];
+    int res = qu[head];
+    ++head;
+    if (head == MAX) head = 0;
+    return res;
 }
 
 int main(){
     init();
-    push(3);
-    push(5);
-    push(7);
 
-    cout << pop() << endl;
-    cout << pop() << endl;
+    enqueue(3);
+    enqueue(5);
+    enqueue(7);
 
-    push(9);
+    cout << dequeue() << endl;
+    cout << dequeue() << endl;
+
+    enqueue(9);
 }
