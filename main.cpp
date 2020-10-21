@@ -3,57 +3,19 @@
 #include <algorithm>
 #include <vector>
 using namespace std;
-
-const int MAX = 100000;
-
-int qu[MAX];
-int tail = 0, head = 0;
-
-int st[MAX];
-int top = 0;
-
-void init(){
-    top = 0, tail = 0;
-}
-
-bool isEmpty(){
-    return (top == tail);
-}
-
-bool isFull(){
-    return (head == (tail + 1) % MAX);
-}
-
-void enqueue(int x) {
-    if (isFull()){
-        cout << "error: queue is full." << endl;
-        return;
-    }
-    qu[tail] = x;
-    ++tail;
-    if(tail == MAX) tail = 0;
-}
-
-int dequeue(){
-    if (isEmpty()){
-        cout << "error: queue is empty." << endl;
-        return -1;
-    }
-    int res = qu[head];
-    ++head;
-    if (head == MAX) head = 0;
-    return res;
-}
+using Graph = vector<vector<int>>;
 
 int main(){
-    init();
+    int N, M;
+    cin >> N >> M;
 
-    enqueue(3);
-    enqueue(5);
-    enqueue(7);
+    Graph G(N);
 
-    cout << dequeue() << endl;
-    cout << dequeue() << endl;
+    for (int i = 0; i < M; ++i){
+        int a, b;
+        cin >> a >> b;
+        G[a].push_back(b);
 
-    enqueue(9);
+        G[b].push_back(a);
+    }
 }
