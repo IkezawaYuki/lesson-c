@@ -4,55 +4,46 @@
 #include <vector>
 using namespace std;
 
-struct Heap{
-    vector<int> heap;
-    Heap(){}
+struct UnionFind{
+    vector<int> par, siz;
 
-    void push(int x) {
-        heap.push_back(x);
-        int i = (int)heap.size() - 1;
-        while (i > 0) {
-            int p = (i - 1) / 2;
-            if (heap[p] >= x) break;
-            heap[i] = heap[p];
-            i = p;
-        }
-        heap[i] = x;
+    UnionFind(int n) : par(n, -1), siz(n, 1) { }
+
+    int root(int x){
+        if (par[x] == -1) return x;
+        else return par[x] = root(par[x]);
     }
 
-    int top(){
-        if (!heap.empty()) return heap[0];
-        else return -1;
+    bool issame(int x, int y) {
+        return root(x) == root(y);
     }
 
-    void pop(){
-        if (heap.empty()) return;
-        int x = heap.back();
-        heap.pop_back();
-        int i = 0;
-        while (i * 2 + 1 < (int)heap.size()) {
-            int child1 = i * 2 + 1, child2 = i * 2 + 2;
-            if (child2 < (int) heap.size()
-                && heap[child2] > heap[child1]){
-                child1 = child2;
-            }
-            if (heap[child1] <= x) break;
-            heap[i] = heap[child1];
-            i = child1;
-        }
-        heap[i] = x;
+    bool unite(int x, int y){
+        x = root(x); y = root(y);
+
+        if(x == y) return false;
+
+        if (siz[x] < siz[y]) swap(x, y);
+
+        par[y] = x;
+        siz[x] += siz[y];
+        return true;
+    }
+
+    int size(int x){
+        return siz[root(x)];
     }
 };
 
 int main(){
-    Heap h;
-    h.push(5); h.push(3); h.push(7); h.push(1);
+    UnionFind uf(7);
 
-    cout << h.top() << endl;
-    h.pop();
-    cout << h.top() << endl;
+    uf.unite(1, 2);
+    uf.unite(2, 3);
+    uf.unite(5, 6);
+    cout << uf.issame(1, 3) << endl;
+    cout << uf.issame(2, 5) << endl;
 
-    h.push(11);
-
-    cout << h.top() << endl;
+    uf.unite(1, 6);
+    cout << uf.issame(2, 5) << endl;
 }
