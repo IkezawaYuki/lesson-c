@@ -6,34 +6,26 @@
 using namespace std;
 using Graph = vector<vector<int>>;
 
-vector<int> BFS(const Graph &G, int s){
-    int N = (int)G.size();
-    vector<int>dist(N, -1);
-    queue<int> que;
+vector<int> color;
+bool dfs(const Graph &G, int v, int cur = 0){
+    color[v] = cur;
+    for (auto next_v: G[v]){
+        if (color[next_v] != -1){
+            if (color[next_v] == cur) return false;
 
-    dist[0] = 0;
-    que.push(0);
-
-    while(!que.empty()){
-        int v = que.front();
-        que.pop();
-
-        for (int x : G[v]) {
-            if (dist[x] != -1)continue;
-
-            dist[x] = dist[v] + 1;
-            que.push(x);
+            continue;
         }
-    }
-    return dist;
-}
 
+        if (!dfs(G, next_v, 1 - cur)) return false;
+    }
+    return true;
+}
 
 int main(){
     int N, M;
     cin >> N >> M;
-    Graph G(N);
 
+    Graph G(N);
     for (int i = 0; i < M; ++i){
         int a, b;
         cin >> a >> b;
@@ -41,18 +33,12 @@ int main(){
         G[b].push_back(a);
     }
 
-    vector<int> dist = BFS(G, 0);
-
-    for (int v = 0; v < N; ++v) cout << v << ": " << dist[v] << endl;
+    color.assign(N, -1);
+    bool is_bipartite = true;
+    for (int v = 0; v < N; ++v){
+        if (color[v] != -1) continue;
+        if (!dfs(G, v)) is_bipartite = false;
+    }
+    if (is_bipartite) cout << "Yes" << endl;
+    else cout << "No" << endl;
 }
-
-
-
-
-
-
-
-
-
-
-
