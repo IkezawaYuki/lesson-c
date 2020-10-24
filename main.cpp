@@ -2,35 +2,34 @@
 #include <string>
 #include <algorithm>
 #include <vector>
+#include <queue>
 using namespace std;
 
-const int MAX = 100000;
+using Graph = vector<vector<int>>;
 
-void BucketSort(vector<int> &a){
-    int N = (int) a.size();
+vector<bool> seen;
 
-    vector<int> num(MAX, 0);
-    for (int i = 0; i < N; ++i){
-        ++num[a[i]];
+void dfs(const Graph &G, int v) {
+    seen[v] = true;
+
+    for (auto next_v : G[v]){
+        if (seen[next_v]) continue;
+        dfs(G, next_v);
     }
-
-    vector<int> sum(MAX, 0);
-    for (int v = 0; v < MAX; ++v){
-        sum[v] = sum[v-1] + num[v];
-    }
-
-    vector<int> a2(N);
-    for (int i = N - 1; i >= 0; --i){
-        a2[--sum[a[i]]] = a[i];
-    }
-    a = a2;
 }
 
 int main(){
-    int N;
-    cin >> N;
-    vector<int>a(N);
-    for (int i = 0; i < N; ++i) cin >> a[i];
-
-    BucketSort(a);
+    int N, M;
+    cin >> N >> M;
+    Graph G(N);
+    for (int i = 0; i < M; ++i){
+        int a, b;
+        cin >> a >> b;
+        G[a].push_back(b);
+    }
+    seen.assign(N, false);
+    for (int v = 0; v < N; ++v){
+        if (seen[v]) continue;
+        dfs(G, v);
+    }
 }
