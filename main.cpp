@@ -7,57 +7,40 @@ using namespace std;
 
 const long long INF = 1LL << 60;
 
-struct Edge{
-    int to;
-    long long w;
-    Edge(int to, long long w) : to(to), w(w) { }
-};
-
-using Graph = vector<vector<Edge>>;
-
-template<class T> bool chmin(T& a, T b) {
-    if (a > b){
-        a = b;
-        return true;
-    }
-    else return false;
-}
-
 int main(){
-    int N, M, s;
-    cin >> N >> M >> s;
+    int N, M;
+    cin >> N >> M;
 
-    Graph G(N);
-    for (int i = 0; i < N; ++i){
-        int a, b, w;
+    vector<vector<long long>> dp(N, vector<long long>(N, INF));
+
+    for (int e = 0; e < M; ++e) {
+        int a, b;
+        long long w;
         cin >> a >> b >> w;
-        G[a].push_back(Edge(b, w));
+        dp[a][b] = w;
     }
+    for (int v = 0; v < N; ++v) dp[v][v] = 0;
 
-    vector<long long> dist(N, INF);
-    dist[s] = 0;
+    for (int k = 0; k < N; ++k)
+        for (int i = 0; i < N; ++i)
+            for (int j = 0; j < N; ++j)
+                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j]);
 
-    priority_queue<pair<long long, int>,
-            vector<pair<long long, int>>,
-            greater<pair<long long, int>>> que;
-    que.push(make_pair(dist[s], s));
 
-    while (!que.empty()){
-        int v = que.top().second;
-        long long d = que.top().first;
-        que.pop();
-
-        if (d > dist[v]) continue;
-
-        for (auto e : G[v]){
-            if (chmin(dist[e.to], dist[v] + e.w)){
-                que.push(make_pair(dist[e.to], e.to));
+    bool exist_negative_cycle = false;
+    for (int v = 0; v < N; ++v) {
+        if (dp[v][v] < 0) exist_negative_cycle = true;
+    }
+    if (exist_negative_cycle){
+        cout << "NEGATIVE CYCLE" << endl;
+    }else{
+        for(int i = 0; i < N; ++i){
+            for (int j = 0; j < N; ++j){
+                if (j) cout << " ";
+                if (dp[i][j] < INF/2) cout << dp[i][j];
+                else cout << "INF";
             }
+            cout << endl;
         }
-    }
-
-    for (int v = 0; v < N; ++v){
-        if (dist[v] < INF) cout << dist[v] << endl;
-        else cout << "INF" << endl;
     }
 }
