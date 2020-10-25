@@ -7,16 +7,15 @@ using namespace std;
 
 const long long INF = 1LL << 60;
 
-struct Edge {
+struct Edge{
     int to;
     long long w;
-    Edge(int to, long long w) : to(to), w(w) {}
+    Edge(int to, long long w) : to(to), w(w) { }
 };
 
 using Graph = vector<vector<Edge>>;
 
-
-template<class T> bool chmin(T& a, T b){
+template<class T> bool chmin(T& a, T b) {
     if (a > b){
         a = b;
         return true;
@@ -29,33 +28,32 @@ int main(){
     cin >> N >> M >> s;
 
     Graph G(N);
-    for (int i = 0; i < M; ++i){
+    for (int i = 0; i < N; ++i){
         int a, b, w;
         cin >> a >> b >> w;
         G[a].push_back(Edge(b, w));
     }
 
-    vector<bool> used(N, false);
-    vector<long long>dist(N, INF);
+    vector<long long> dist(N, INF);
     dist[s] = 0;
 
-    for (int iter = 0; iter < N; ++iter){
-        long long min_dist = INF;
-        int min_v = -1;
+    priority_queue<pair<long long, int>,
+            vector<pair<long long, int>>,
+            greater<pair<long long, int>>> que;
+    que.push(make_pair(dist[s], s));
 
-        for (int v = 0; v < N; ++v) {
-            if (!used[v] && dist[v] < min_dist){
-                min_dist = dist[v];
-                min_v = v;
+    while (!que.empty()){
+        int v = que.top().second;
+        long long d = que.top().first;
+        que.pop();
+
+        if (d > dist[v]) continue;
+
+        for (auto e : G[v]){
+            if (chmin(dist[e.to], dist[v] + e.w)){
+                que.push(make_pair(dist[e.to], e.to));
             }
         }
-
-        if (min_v == -1) break;
-
-        for (auto e : G[min_v]){
-            chmin(dist[e.to], dist[min_v] + e.w);
-        }
-        used[min_v] = true;
     }
 
     for (int v = 0; v < N; ++v){
