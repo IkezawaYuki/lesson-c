@@ -4,45 +4,62 @@
 #include <vector>
 #include <queue>
 using namespace std;
-using Graph = vector<vector<int>>;
 
-vector<int> depth;
-vector<int> subtree_size;
+const long long INF = 1LL << 60;
 
-void dfs(const Graph &G, int v, int p = -1, int d = 0){
-    depth[v] = d;
-    for (auto c : G[v]){
-        if (c == p) continue;
-        dfs(G, c, v, d + 1);
+struct Edge {
+    int to;
+    long long w;
+    Edge(int to, long long w) : to(to), w(w) {}
+};
+
+using Graph = vector<vector<Edge>>;
+
+
+template<class T> bool chmin(T& a, T b){
+    if (a > b){
+        a = b;
+        return true;
     }
-
-    subtree_size[v] = 1;
-    for (auto c : G[v]){
-        if (c == p) continue;
-
-        subtree_size[v] += subtree_size[c];
-    }
+    else return false;
 }
 
 int main(){
-    int N;
-    cin >> N;
+    int N, M, s;
+    cin >> N >> M >> s;
 
     Graph G(N);
-    for (int i = 0; i < N - 1; ++i){
-        int a, b;
-        cin >> a >> b;
-        G[a].push_back(b);
-        G[b].push_back(a);
+    for (int i = 0; i < M; ++i){
+        int a, b, w;
+        cin >> a >> b >> w;
+        G[a].push_back(Edge(b, w));
     }
 
-    int root = 0;
-    depth.assign(N, 0);
-    subtree_size.assign(N, 0);
-    dfs(G, root);
+    bool exist_negative_cycle = false;
+    vector<long long> dist(N, INF);
+    dist[s] = 0;
+    for (int iter = 0; iter < N; ++iter){
+        bool update = false;
+        for (int v = 0; v < N; ++v){
+            if (dist[v] == INF) continue;
 
-    for (int v = 0; v < N; ++v){
-        cout << v << ": depth = " << depth[v]
-        << ", subtree_size = " << subtree_size[v] << endl;
+            for(auto e : G[v]){
+                if (chmin(dist[e.to], dist[v] + e.w)){
+                    update = true;
+                }
+            }
+        }
+
+        if (!update) break;
+
+        if (iter == N - 1 && update) exist_negative_cycle = true;
+    }
+
+    if (exist_negative_cycle) cout << "NEGATIVE CYCLE" << endl;
+    else{
+        for (int v = 0; v < N; ++v){
+            if (dist[v] < INF) cout << dist[v] << endl;
+            else cout << "INF" << endl;
+        }
     }
 }
