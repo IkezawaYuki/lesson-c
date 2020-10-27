@@ -5,95 +5,59 @@
 #include <queue>
 using namespace std;
 
-struct Graph {
-    struct Edge{
-        int rev, from, to, cap;
-        Edge(int r, int f, int t, int c) : rev(r), from(f), to(t), cap(c){}
-    };
+const long long INF = 1LL << 60;
 
-    vector<vector<Edge>>list;
-
-    Graph(int N = 0) : list(N) { }
-
-    size_t size(){
-        return list.size();
-    }
-
-    vector<Edge> &operator [] (int i){
-        return list[i];
-    }
-
-    Edge& redge(const Edge &e) {
-        return list[e.to][e.rev];
-    }
-
-    void run_flow(Edge &e, int f) {
-        e.cap -= f;
-        redge(e).cap += f;
-    }
-
-    void addedge(int from, int to, int cap) {
-        int fromrev = (int) list[from].size();
-        int torev = (int) list[to].size();
-        list[from].push_back(Edge(torev, from, to, cap));
-        list[to].push_back(Edge(fromrev, to, from, 0));
-    }
+struct Edge{
+    int to;
+    long long w;
+    Edge(int to, long long w): to(to), w(w) {}
 };
 
-struct FordFulkerson {
-    static const int INF = 1 << 30;
-    vector<int> seen;
+using Graph = vector<vector<Edge>>;
 
-    FordFulkerson(){}
-
-    int fodfs(Graph &G, int v, int t, int f){
-        if (v == t) return f;
-
-        seen[v] = true;
-        for (auto &e : G[v]){
-            if (seen[e.to]) continue;
-
-            if (e.cap == 0) continue;
-
-            int flow = fodfs(G, e.to, t, min(f, e.cap));
-
-            if (flow == 0) continue;
-
-            G.run_flow(e, flow);
-
-            return flow;
-        }
-
-        return 0;
+template<class T> bool chmin(T& a, T b){
+    if (a > b){
+        a = b;
+        return true;
     }
-
-    int solve(Graph &G, int s, int t){
-        int res = 0;
-        while (true){
-            seen.assign((int) G.size(), 0);
-            int flow = fodfs(G, s, t, INF);
-
-            if (flow == 0) return res;
-
-            res += flow;
-        }
-        return 0;
-    }
-};
-
+    return false;
+}
 
 int main(){
-    int N, M;
-    cin >> N >> M;
+    int N, M, s;
+    cin >> N >> M >> s;
+
     Graph G(N);
     for (int i = 0; i < M; ++i){
-        int u, v, c;
-        cin >> u >> v >> c;
-
-        G.addedge(u, v, c);
+        int a, b, w;
+        cin >> a >> b >> w;
+        G[a].push_back(Edge(b, w));
     }
 
-    FordFulkerson ff;
-    int s = 0, t = N - 1;
-    cout << ff.solve(G, s, t) << endl;
+    vector<bool> used(N, false);
+    vector<long long> dist(N, INF);
+    dist[s] = 0;
+    for (int iter = 0; iter < N; ++iter){
+        long long min_dist = INF;
+        int min_v = -1;
+
+        for (int v = 0; v < N; ++v){
+            if (!used[v] && dist[v] < min_dist){
+                min_dist = dist[v];
+                min_v = v;
+            }
+        }
+
+        if (min_v == -1) break;
+
+        for (auto e : G[min_v]) {
+            chmin(dist[e.to], dist[min_v] + e.w);
+        }
+        used[min_v] = true;
+    }
+
+    for(int v = 0; v < N; ++v){
+        if(dist[v] < INF) cout << dist[v] << endl;
+        else cout << "INF" << endl;
+    }
 }
