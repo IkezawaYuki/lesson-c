@@ -34,30 +34,31 @@ int main(){
         G[a].push_back(Edge(b, w));
     }
 
-    vector<bool> used(N, false);
+    bool exist_negative_cycle = false;
     vector<long long> dist(N, INF);
     dist[s] = 0;
     for (int iter = 0; iter < N; ++iter){
-        long long min_dist = INF;
-        int min_v = -1;
-
+        bool update = false;
         for (int v = 0; v < N; ++v){
-            if (!used[v] && dist[v] < min_dist){
-                min_dist = dist[v];
-                min_v = v;
+            if (dist[v] == INF) continue;
+
+            for(auto e: G[v]){
+                if (chmin(dist[e.to], dist[v] + e.w)){
+                    update = true;
+                }
             }
         }
 
-        if (min_v == -1) break;
+        if (!update) break;
 
-        for (auto e : G[min_v]) {
-            chmin(dist[e.to], dist[min_v] + e.w);
-        }
-        used[min_v] = true;
+        if (iter == N - 1 && update) exist_negative_cycle = true;
     }
 
-    for(int v = 0; v < N; ++v){
-        if(dist[v] < INF) cout << dist[v] << endl;
-        else cout << "INF" << endl;
+    if (exist_negative_cycle) cout << "NEGATIVE CYCLE" << endl;
+    else {
+        for (int v = 0; v < N; ++v) {
+            if (dist[v] < INF) cout << dist[v] << endl;
+            else cout << "INF" << endl;
+        }
     }
 }
